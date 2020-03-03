@@ -3,7 +3,7 @@ import { Grid, Row, Col, Icon, FlexboxGrid, Button } from "rsuite";
 import TweetButton from "../shared/tweetButton/TweetButton";
 import "./newTweetForm.css";
 import { observable } from "mobx";
-import { observer } from "mobx-react";
+import { observer, useObserver, useLocalStore } from "mobx-react";
 import { LoginDto } from "../../../../twittermini-api/src/modules/auth/dto/login.dto";
 import { CreatePostDto } from "../../../../twittermini-api/src/modules/posts/dtos/add-post.dto";
 import PostsRepository from "../../repositories/PostsRepository";
@@ -14,14 +14,14 @@ type NewTweetFormStore = {
   images: File[];
   text: string;
 };
-const formStore = observable<NewTweetFormStore>({
-  text: "",
-  images: []
-});
-function NewTweetForm() {
+export default function NewTweetForm() {
   const history = useHistory();
   const imageInputRef = useRef<HTMLInputElement>(null);
-  return (
+  const formStore = useLocalStore<NewTweetFormStore>(() => ({
+    text: "",
+    images: []
+  }));
+  return useObserver(() => (
     <Grid fluid className="tweet-form">
       <Row>
         <Col xs={4} sm={3}>
@@ -29,7 +29,6 @@ function NewTweetForm() {
             src="https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png"
             style={{
               width: "100%",
-              // height:30,
               borderRadius: 9999
             }}
           />
@@ -96,7 +95,7 @@ function NewTweetForm() {
         </Col>
       </Row>
     </Grid>
-  );
+  ));
 
   async function submitForm() {
     if (formStore.text.length > 0 && formStore.text.length < 140) {
@@ -152,5 +151,3 @@ function NewTweetForm() {
     );
   }
 }
-
-export default observer(NewTweetForm);

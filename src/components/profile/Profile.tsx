@@ -17,16 +17,23 @@ export default function Profile() {
     promise: userPromise,
     loading: userLoading,
     error: userError
-  } = useAsync(
-    new UserRepository(TwitterMiniAPI).getUserByHandle(String(handle))
+  } = useAsync(() =>{
+    return new UserRepository(TwitterMiniAPI).getUserByHandle(String(handle))
+  });
+  const { value: posts, loading, error, promise } = useAsyncAfter(
+    userPromise,
+    user => {
+      return new PostsRepository(TwitterMiniAPI).getPostsFromUser(user.id);
+    }
   );
-  const { value: posts, loading, error } = useAsyncAfter(userPromise, user => {
-    return new PostsRepository(TwitterMiniAPI).getPostsFromUser(user.id);
-  });
-  useEffect(() => {
-    console.log("owwo");
-    console.log(user);
-  });
+  // const {value, promise: pr} = useAsyncAfter(promise, async (posts)=>{
+  //   console.log(posts)
+  // })
+  // const {value: ho} = useAsyncAfter(pr, async (posts)=>{
+  //   console.log("he")
+  // })
+  console.log("RELODED");
+  console.log("______");
   return (
     <>
       <div

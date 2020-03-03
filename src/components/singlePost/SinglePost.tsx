@@ -13,7 +13,7 @@ import PostsRepository from '../../repositories/PostsRepository';
 import { useAsync } from '../../hooks/useAsync';
 export default function SinglePost() {
   const { id } = useParams();
-  const {value: post, loading, status, error} = useAsync(new PostsRepository(TwitterMiniAPI).getPost(Number(id)))
+  const {value: post, loading, status, error} = useAsync(()=>new PostsRepository(TwitterMiniAPI).getPost(Number(id)))
   return (
     <>
       <div className="single-post">

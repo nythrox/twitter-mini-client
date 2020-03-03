@@ -10,7 +10,7 @@ import NewTweetForm from "../newTweetForm/NewTweetForm";
 import { useAsync } from "../../hooks/useAsync";
 export default function Home() {
   const { value: posts, status, error, loading } = useAsync(
-    new PostsRepository(TwitterMiniAPI).getAllPosts()
+    ()=>new PostsRepository(TwitterMiniAPI).getAllPosts()
   );
   return (
     <>

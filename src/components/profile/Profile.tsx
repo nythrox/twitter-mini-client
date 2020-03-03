@@ -8,24 +8,25 @@ import { Loader, Grid, FlexboxGrid } from "rsuite";
 import { UserDto } from "../../../../twittermini-api/src/modules/users/dtos/user.dto";
 import UserRepository from "../../repositories/UserRepository";
 import TweetSeperator from "../tweetSeperator/TweetSeperator";
+import { useAsync, useAsyncAfter, PromiseCallback } from "../../hooks/useAsync";
+
 export default function Profile() {
   const { handle } = useParams();
-  const [user, setUser] = useState<UserDto>();
-  const [posts, setPosts] = useState<PostDto[]>();
+  const {
+    value: user,
+    promise: userPromise,
+    loading: userLoading,
+    error: userError
+  } = useAsync(
+    new UserRepository(TwitterMiniAPI).getUserByHandle(String(handle))
+  );
+  const { value: posts, loading, error } = useAsyncAfter(userPromise, user => {
+    return new PostsRepository(TwitterMiniAPI).getPostsFromUser(user.id);
+  });
   useEffect(() => {
-    if (!user) {
-      const userRepository = new UserRepository(TwitterMiniAPI);
-      userRepository.getUserByHandle(String(handle)).then(user => {
-        setUser(user);
-        console.log(user);
-        const postsRepository = new PostsRepository(TwitterMiniAPI);
-        postsRepository.getPostsFromUser(Number(user.id)).then(posts => {
-          setPosts(posts);
-          console.log(posts);
-        });
-      });
-    }
-  }, []);
+    console.log("owwo");
+    console.log(user);
+  });
   return (
     <>
       <div
@@ -36,22 +37,20 @@ export default function Profile() {
       >
         <FlexboxGrid align="middle">
           <FlexboxGrid.Item>
-            {user ? (
-              <h1 style={{ color: "white" }}>{user.name}</h1>
-            ) : (
-              <Loader />
-            )}
+            {userError && userError.status}
+            {userLoading && <Loader />}
+            {user && <h1 style={{ color: "white" }}>{user.name}</h1>}
           </FlexboxGrid.Item>
           <FlexboxGrid.Item>
-            {user ? (
+            {user && (
               <h4 style={{ marginLeft: 10, color: "white" }}>{user.handle}</h4>
-            ) : (
-              <Loader />
             )}
           </FlexboxGrid.Item>
         </FlexboxGrid>
         <TweetSeperator />
-        {posts ? (
+        {loading && loading}
+        {error && error.status}
+        {posts &&
           posts.map((post, i) => (
             <Post
               key={i}
@@ -63,10 +62,7 @@ export default function Profile() {
                 image => TwitterMiniAPI.getUri() + image.url
               )}
             />
-          ))
-        ) : (
-          <Loader />
-        )}
+          ))}
       </div>
     </>
   );

@@ -9,7 +9,7 @@ import TwitterMiniAPI from "../../axios";
 import NewTweetForm from "../newTweetForm/NewTweetForm";
 import { useAsync } from "../../hooks/useAsync";
 export default function Home() {
-  const { data: posts, status, error, loading } = useAsync(
+  const { value: posts, status, error, loading } = useAsync(
     new PostsRepository(TwitterMiniAPI).getAllPosts()
   );
   return (
@@ -24,7 +24,8 @@ export default function Home() {
         <NewTweetForm />
         <TweetSeperator />
         {loading && <Loader />}
-        {error && error}
+        {error ? console.log(error) : null}
+        {error && error.status}
         {posts &&
           posts.map((post, i) => (
             <Post

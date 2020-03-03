@@ -1,0 +1,16 @@
+.post {
+  color: white;
+  padding: 15px 10px;
+}
+.post-username {
+  font-size: 14px;
+  font-weight: bold;
+}
+.post-handle {
+    color:grey;
+    font-size:13px;
+    margin-left:8px
+}
+.post-text {
+    font-size: 15px;
+}

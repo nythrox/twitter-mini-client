@@ -1,0 +1,25 @@
+.tweet-form {
+  padding: 10px !important;
+}
+input {
+  background: none;
+  width: 100%;
+  border: none;
+  padding-bottom: 50px;
+  padding-right: 10px;
+  padding-left:10px;
+}
+textarea:focus,
+input:focus {
+  outline: none;
+}
+.add-media {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.add-media:hover {
+  background: rgba(29, 161, 242, 0.1);
+  border-radius:999px;
+}

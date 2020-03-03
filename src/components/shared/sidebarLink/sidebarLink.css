@@ -1,0 +1,22 @@
+.sidebar-link {
+  margin: 25px 0px;
+}
+a {
+  color: white !important;
+  font-size: 19px;
+  font-weight: 600;
+  text-decoration: none!important;
+}
+.inner-text {
+  display: inline;
+  padding: 10px 15px 10px 10px;
+}
+.inner-text:hover {
+  font-weight: 700;
+  background: rgba(29, 161, 242, 0.1);
+  color: rgba(29, 161, 242, 1);
+  border-radius: 999px;
+}
+.icon {
+  margin-right: 10px;
+}

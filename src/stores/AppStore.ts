@@ -1,31 +1,24 @@
-import mobx, { observable, action } from "mobx";
+import mobx, { observable, action, decorate, computed } from "mobx";
 import { UserDto } from "../../../twittermini-api/src/modules/users/dtos/user.dto";
 import React from "react";
-import { cookies, ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from '../axios';
+import { AuthService } from "../components/services/authService";
+import { Login } from "../components/login/Login";
 class AppStore {
-  @observable user: UserDto | null = {
-    name: "pumpkin",
-    handle: "nythrox",
-    id: 2
-  };
+  private authService = new AuthService();
+
+  @observable user?: UserDto = this.authService.user;
 
   @action
-  login(user: UserDto, accessToken: String, refreshToken: String ) {
-    this.user = user;
-    cookies.set(ACCESS_TOKEN_COOKIE, accessToken)
-    cookies.set(REFRESH_TOKEN_COOKIE, refreshToken)
+  login(user: UserDto, accessToken: String, refreshToken: String) {
+    this.authService.login(user, accessToken, refreshToken);
+    this.user = this.authService.user;
   }
-
-  @action
+  @action.bound
   logout() {
-    this.user = null;
-    cookies.remove(ACCESS_TOKEN_COOKIE)
-    cookies.remove(REFRESH_TOKEN_COOKIE)
+    this.authService.logout();
+    this.user = this.authService.user;
   }
-
-  
 }
-
 export const AppStoreInstance = new AppStore();
 
 export const AppContext = React.createContext(AppStoreInstance);

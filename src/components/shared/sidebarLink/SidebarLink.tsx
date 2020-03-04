@@ -13,7 +13,7 @@ export default function SidebarLink({
 }: SidebarLinkProps) {
   return (
     <div className="sidebar-link">
-      <Link to={to || ""} onClick={e => onClick || null}>
+      <Link to={to || ""} onClick={e => onClick ? onClick() : null}>
         <div className="inner-text">
           <Icon className="icon" icon={icon} size="lg" />
           <span className="text"></span>{text}

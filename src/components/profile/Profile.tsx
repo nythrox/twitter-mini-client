@@ -8,7 +8,12 @@ import { Loader, Grid, FlexboxGrid } from "rsuite";
 import { UserDto } from "../../../../twittermini-api/src/modules/users/dtos/user.dto";
 import UserRepository from "../../repositories/UserRepository";
 import TweetSeperator from "../tweetSeperator/TweetSeperator";
-import { useAsync, useAsyncAfter, PromiseCallback } from "../../hooks/useAsync";
+import {
+  useAsync,
+  useAsyncAfter,
+  PromiseCallback,
+  useAsyncAfterChain
+} from "../../hooks/useAsync";
 
 export default function Profile() {
   const { handle } = useParams();
@@ -17,8 +22,8 @@ export default function Profile() {
     promise: userPromise,
     loading: userLoading,
     error: userError
-  } = useAsync(() =>{
-    return new UserRepository(TwitterMiniAPI).getUserByHandle(String(handle))
+  } = useAsync(() => {
+    return new UserRepository(TwitterMiniAPI).getUserByHandle(String(handle));
   });
   const { value: posts, loading, error, promise } = useAsyncAfter(
     userPromise,
@@ -26,12 +31,6 @@ export default function Profile() {
       return new PostsRepository(TwitterMiniAPI).getPostsFromUser(user.id);
     }
   );
-  // const {value, promise: pr} = useAsyncAfter(promise, async (posts)=>{
-  //   console.log(posts)
-  // })
-  // const {value: ho} = useAsyncAfter(pr, async (posts)=>{
-  //   console.log("he")
-  // })
   console.log("RELODED");
   console.log("______");
   return (

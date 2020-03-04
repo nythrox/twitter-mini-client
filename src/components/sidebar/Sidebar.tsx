@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Grid, Col } from "rsuite";
 import TweetButton from "../shared/tweetButton/TweetButton";
 import SidebarLink from "../shared/sidebarLink/SidebarLink";
+import { AppContext } from "../../stores/AppStore";
 export default function Sidebar() {
+  const appStore = useContext(AppContext);
   return (
     <Grid
       fluid
@@ -15,17 +17,23 @@ export default function Sidebar() {
       }}
     >
       <Col>
-        <SidebarLink text="Home" icon="home" />
+        <SidebarLink to="/" text="Home" icon="home" />
       </Col>
       <Col>
-        <SidebarLink text="Explore" icon="hashtag" />
+        <SidebarLink text="Logout" icon="hashtag" onClick={appStore.logout} />
       </Col>
       <Col>
-        <SidebarLink to="/profile" text="Profile" icon="profile" />
+        <SidebarLink
+          to={"/user/" + appStore.user?.handle}
+          text="Profile"
+          icon="profile"
+        />
       </Col>
-      <Col>
-        <TweetButton />
-      </Col>
+      {
+        // <Col>
+        //   <TweetButton />
+        // </Col>
+      }
     </Grid>
   );
 }

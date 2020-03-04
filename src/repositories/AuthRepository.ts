@@ -18,7 +18,7 @@ export default class AuthRepository {
       const refreshData: RefreshDto = {
         refreshToken
       };
-      return await this.axios.post(this.url + "auth/refresh", refreshData);
+      return (await this.axios.post(this.url + "auth/refresh", refreshData)).data;
     } catch (e) {
       throw e;
     }
@@ -26,7 +26,7 @@ export default class AuthRepository {
 
   async login(loginDto: LoginDto): Promise<LoginResultDto> {
     try {
-      return await this.axios.post(this.url + "auth/login", loginDto);
+      return (await this.axios.post(this.url + "auth/login", loginDto)).data;
     } catch (e) {
       throw e;
     }
@@ -34,7 +34,7 @@ export default class AuthRepository {
 
   async register(registerDto: CreateUserDto): Promise<RegisterResultDto> {
     try {
-      return await this.axios.post(this.url + "auth/register", registerDto);
+      return (await this.axios.post(this.url + "auth/register", registerDto)).data;
     } catch (e) {
       throw e;
     }

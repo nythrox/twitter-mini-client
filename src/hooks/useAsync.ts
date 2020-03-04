@@ -1,5 +1,4 @@
 import { useEffect, useState, useCallback } from "react";
-import { promises } from "dns";
 export type AsyncHookState<T> = {
   error?: any;
   loading: boolean;
@@ -67,13 +66,68 @@ export function useAsyncAfter<A, T>(
   });
   useEffect(() => {
     after.then(value => {
-      setState({
+      setState(() => ({
         ...state,
         promise: callback(value),
         didShoot: true
-      });
+      }));
     });
   }, []);
+  useEffect(() => {
+    if (state.loading) {
+      if (state.promise) {
+        state.promise
+          .then(value => {
+            setState({
+              ...state,
+              value: value,
+              loading: false,
+              status: FutureState.fulfilled
+            });
+          })
+          .catch(e => {
+            setState({
+              ...state,
+              loading: false,
+              error: e,
+              status: FutureState.rejected
+            });
+          });
+      }
+    }
+  }, [state.loading, state.promise]);
+  return {
+    error: state.error,
+    loading: state.loading,
+    status: state.status,
+    value: state.value,
+    promise: state.promise
+  };
+}
+
+export function useAsyncAfterChain<A, T>(
+  callback: PromiseCallback<A, T>,
+  after?: Promise<A>
+) {
+  const [state, setState] = useState<
+    AsyncHookState<T> & { promise?: Promise<T>; didShoot: boolean }
+  >({
+    loading: true,
+    status: FutureState.pending,
+    didShoot: false
+  });
+  useEffect(() => {
+    console.log(state.promise);
+    if (after && !state.promise && !state.didShoot) {
+      after.then(value => {
+        setState(() => ({
+          ...state,
+          promise: state.promise ? state.promise : callback(value),
+          didShoot: true
+        }));
+      });
+    }
+  });
   useEffect(() => {
     if (state.loading) {
       if (state.promise) {
